@@ -31,9 +31,12 @@ export async function middleware(req) {
 
   const fetchOptions = {
     method: req.method,
-    headers: { ...req.headers, Host: new URL(targetUrl).host },
+    headers: {
+      ...req.headers,
+      Host: new URL(targetUrl).host,
+      'Content-Type': req.headers.get('content-type') || 'application/json', // Default to JSON if missing
+    },
     body: req.method !== 'GET' && req.method !== 'HEAD' ? await req.text() : undefined,
-    credentials: 'include',
   };
 
   // Remove sensitive headers from forwarding
