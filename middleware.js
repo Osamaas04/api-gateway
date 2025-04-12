@@ -56,8 +56,7 @@ export async function middleware(req) {
     console.log(process.env.JWT_SECRET)
     try {
       const decoded = jwt.decode(token);
-      console.log(decoded)
-      
+      req.headers.set('x-user-id', decoded.sub);
     } catch (err) {
       return new NextResponse(JSON.stringify({ error: 'Unauthorized: Invalid token' }), {
         status: 401,
