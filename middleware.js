@@ -42,10 +42,13 @@ export async function middleware(req) {
   // 🔒 AUTH CHECK (only for protected routes)
   if (!isPublicRoute) {
     const cookie = req.headers.get('cookie') || '';
+    console.log(req.headers)
+    console.log(cookie)
     const token = cookie
       .split(';')
       .find(c => c.trim().startsWith('token='))
       ?.split('=')[1];
+      console.log(token)
 
     if (!token) {
       return new NextResponse(JSON.stringify({ error: 'Unauthorized: No token' }), {
