@@ -27,43 +27,23 @@ export async function middleware(req) {
     return NextResponse.next();
   }
 
-  // Extract and reformat headers
-  const headers = {};
-  req.headers.forEach((value, key) => {
-    if (key.toLowerCase() !== 'host' && key.toLowerCase() !== 'content-length') {
-      headers[key] = value;
-    }
-  });
+  const fetchOptions = {
+    method: req.method,
+    headers: { ...req.headers, Host: new URL(targetUrl).host },
+    body: req.method !== 'GET' && req.method !== 'HEAD' ? await req.text() : undefined,
+  };
 
-  headers['host'] = new URL(targetUrl).host;
-
-  // Handle body depending on content-type
-  const contentType = req.headers.get('content-type') || '';
-  let body;
-
-  if (req.method !== 'GET' && req.method !== 'HEAD') {
-    if (contentType.includes('application/json')) {
-      const json = await req.json();
-      body = JSON.stringify(json);
-    } else {
-      body = await req.text();
-    }
-  }
+  delete fetchOptions.headers['content-length'];
+  delete fetchOptions.headers['host'];
 
   try {
-    const proxyResponse = await fetch(targetUrl, {
-      method: req.method,
-      headers,
-      body,
-    });
+    const proxyResponse = await fetch(targetUrl, fetchOptions);
 
-    // Build the response
     const response = new NextResponse(proxyResponse.body, {
       status: proxyResponse.status,
       headers: proxyResponse.headers,
     });
 
-    // Append CORS headers
     Object.entries(corsHeaders).forEach(([key, value]) => {
       response.headers.set(key, value);
     });
