@@ -53,11 +53,9 @@ export async function middleware(req) {
         headers: { 'Content-Type': 'application/json' },
       });
     }
-
+    console.log(process.env.JWT_SECRET)
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.headers.set('x-user-id', decoded.sub);
-      console.log(process.env.JWT_SECRET)
       console.log(decoded)
       
     } catch (err) {
