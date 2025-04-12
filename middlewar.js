@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
 
 export async function middleware(req) {
   const url = req.nextUrl;
@@ -18,7 +17,6 @@ export async function middleware(req) {
 
   let targetUrl = null;
 
-  // Define which target URLs to proxy
   if (url.pathname.startsWith('/api/social')) {
     targetUrl = `https://social.replix.space${url.pathname.replace('/api/social', '/api')}${url.search}`;
   } else if (url.pathname.startsWith('/api/account')) {
@@ -28,35 +26,6 @@ export async function middleware(req) {
   if (!targetUrl) {
     return NextResponse.next();
   }
-
-  // Extract and verify token
-  const cookie = req.headers.get('cookie') || '';
-  const token = cookie
-    .split(';')
-    .find(c => c.trim().startsWith('token='))
-    ?.split('=')[1];
-
-  // If token is missing, reject the request immediately
-  if (!token) {
-    return new NextResponse(JSON.stringify({ error: 'Unauthorized: No token' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
-
-  let userPayload;
-  try {
-    // Verify JWT token
-    userPayload = jwt.verify(token, process.env.JWT_SECRET); // Use your secret key or public key for verification
-  } catch (err) {
-    return new NextResponse(JSON.stringify({ error: 'Unauthorized: Invalid token' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
-
-  // Attach user data to request headers for downstream services
-  req.headers.set('x-user-id', userPayload.sub);  // Assuming 'sub' is the user ID from the token payload
 
   // Extract and reformat headers
   const headers = {};
