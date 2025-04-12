@@ -42,13 +42,10 @@ export async function middleware(req) {
   // 🔒 AUTH CHECK (only for protected routes)
   if (!isPublicRoute) {
     const cookie = req.headers.get('cookie') || '';
-    console.log(req.headers)
-    console.log(cookie)
     const token = cookie
       .split(';')
       .find(c => c.trim().startsWith('token='))
       ?.split('=')[1];
-      console.log(token)
 
     if (!token) {
       return new NextResponse(JSON.stringify({ error: 'Unauthorized: No token' }), {
@@ -59,7 +56,10 @@ export async function middleware(req) {
 
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.headers.set('x-user-id', decoded.sub); // Attach user ID for downstream
+      req.headers.set('x-user-id', decoded.sub);
+      console.log(process.env.JWT_SECRET)
+      console.log(decoded)
+      
     } catch (err) {
       return new NextResponse(JSON.stringify({ error: 'Unauthorized: Invalid token' }), {
         status: 401,
