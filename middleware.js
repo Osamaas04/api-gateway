@@ -55,7 +55,7 @@ export async function middleware(req) {
     }
     console.log(process.env.JWT_SECRET)
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.decode(token);
       console.log(decoded)
       
     } catch (err) {
