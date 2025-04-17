@@ -23,7 +23,7 @@ export async function middleware(req) {
     '/api/account/register',
     '/api/account/forgot-password',
     '/api/account/reset-password',
-    'api/social/createUserId',
+    '/api/social/createUserId',
   ];
 
   const isPublicRoute = publicPaths.some(path => pathname.startsWith(path));
