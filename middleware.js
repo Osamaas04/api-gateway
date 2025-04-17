@@ -24,6 +24,9 @@ export async function middleware(req) {
     '/api/account/forgot-password',
     '/api/account/reset-password',
     '/api/social/createUserId',
+    '/api/social/webhook/messenger',
+    '/api/social/webhook/instagram',
+    '/api/social/webhook/whatsapp',
   ];
 
   const isPublicRoute = publicPaths.some(path => pathname.startsWith(path));
