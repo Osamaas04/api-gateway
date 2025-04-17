@@ -6,7 +6,7 @@ export async function middleware(req) {
   const { pathname } = url;
 
   const corsHeaders = {
-    'Access-Control-Allow-Origin': 'https://frontend.replix.space',
+    'Access-Control-Allow-Origin': 'https://replix.space',
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Access-Control-Allow-Credentials': 'true',
